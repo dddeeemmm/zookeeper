@@ -1,0 +1,6 @@
+Server {
+   org.apache.zookeeper.server.auth.DigestLoginModule required
+   username="{{ zookeeper_admin_name }}"
+   password="{{ zookeeper_admin_password }}"
+   user_admin="{{ zookeeper_admin_password }}";
+};

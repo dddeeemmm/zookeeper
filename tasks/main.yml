@@ -1,0 +1,7 @@
+---
+
+- include: install.yml
+  when: zookeeper_install | bool
+
+- include: config.yml
+- include: healthcheck.yml

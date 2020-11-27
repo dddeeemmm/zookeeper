@@ -1,0 +1,50 @@
+---
+
+- name: systemd
+  template:
+    src: zookeeper.service.j2
+    dest: /etc/systemd/system/zookeeper.service
+  register: zookeeper_systemd
+
+- name: config
+  template:
+    src: zoo.cfg.j2
+    dest: '{{ zookeeper_dir_work }}/conf/zoo.cfg'
+  register: zookeeper_config
+
+- name: myid
+  template:
+    src: myid.j2
+    dest: '{{ zookeeper_dir_data }}/myid'
+    owner: '{{ zookeeper_user }}'
+    group: '{{ zookeeper_group }}'
+  register: zookeeper_myid
+
+
+- block:
+
+  - name: jaas
+    template:
+      src: zookeeper-jaas.conf.j2
+      dest: '{{ zookeeper_dir_work }}/conf/zookeeper-jaas.conf'
+      owner: '{{ zookeeper_user }}'
+      group: '{{ zookeeper_group }}'
+    register: zookeeper_jaas
+
+  - name: java.env
+    template:
+      src: java.env.j2
+      dest: '{{ zookeeper_dir_work }}/conf/java.env'
+      owner: '{{ zookeeper_user }}'
+      group: '{{ zookeeper_group }}'
+    register: zookeeper_javaenv
+
+  when: zookeeper_sasl | bool
+
+
+- name: enable and start or restart
+  systemd:
+    name: zookeeper
+    enabled: yes
+    state: '{% if zookeeper_systemd.changed or zookeeper_config.changed or zookeeper_myid.changed or zookeeper_jaas.changed or zookeeper_javaenv changed %}restarted{% else %}started{% endif %}'
+    daemon_reload: '{% if zookeeper_systemd.changed %}true{% else %}false{% endif %}'

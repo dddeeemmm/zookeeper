@@ -1,0 +1,21 @@
+---
+
+- name: wait zookeeper
+  shell: '{{ zookeeper_healthcheck }}'
+  args:
+    executable: /bin/bash
+  register: srvr
+  until: srvr.rc == 0
+  retries: 60
+  delay: 5
+  changed_when: false
+
+- name: wait quorum
+  shell: '{{zookeeper_healthcheck}}'
+  args:
+    executable: /bin/bash
+  register: srvr
+  until: '"Latency min/avg/max:" in srvr.stdout'
+  retries: 60
+  delay: 5
+  changed_when: false

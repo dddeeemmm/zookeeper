@@ -1,0 +1,18 @@
+---
+
+zookeeper_java_package: java-1.8.0-openjdk
+
+zookeeper_user:  zookeeper
+zookeeper_group: zookeeper
+
+zookeeper_url: https://apache-mirror.rbc.ru/pub/apache/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz
+
+zookeeper_dir_work: /opt/apache-zookeeper-{{ zookeeper_version }}-bin
+zookeeper_dir_data: /var/lib/zookeeper
+zookeeper_dir_log:  /var/log
+
+zookeeper_port_server:   2888
+zookeeper_port_election: 3888
+zookeeper_port_client:   2181
+
+zookeeper_healthcheck: "exec 42<>/dev/tcp/127.0.0.1/{{ zookeeper_port_client }}; echo -e 'srvr' >&42; cat <&42"

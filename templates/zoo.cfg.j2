@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+# milliseconds of each tick
+tickTime={{ zookeeper_time_tick }}
+# number of ticks that the initial synchronization phase can take
+initLimit={{ zookeeper_limit_init }}
+# number of ticks that can pass between sending a request and getting an acknowledgement
+syncLimit={{ zookeeper_limit_sync }}
+# data store directory
+dataDir={{ zookeeper_dir_data }}
+# the port at which the clients will connect
+clientPort={{ zookeeper_port_client }}
+# maximum number of client connections
+maxClientCnxns={{ zookeeper_client_cnxns_max }}
+# number of snapshots to retain in dataDir
+autopurge.snapRetainCount={{ zookeeper_autopurge_snap_retain }}
+# purge task interval in hours (0 to disable)
+autopurge.purgeInterval={{ zookeeper_autopurge_interval }}
+
+# servers
+{% for host in play_hosts | sort %}
+server.{{ loop.index }}={{ host }}.{{ domain }}:{{ zookeeper_port_server }}:{{ zookeeper_port_election }}
+{% endfor %}
+
+{% if zookeeper_sasl | bool %}
+# sasl
+authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+requireClientAuthScheme=sasl
+jaasLoginRenew=3600000
+{% endif %}

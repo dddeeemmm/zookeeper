@@ -1,0 +1,37 @@
+---
+
+- name: java
+  package:
+    name: '{{ zookeeper_java_package }}'
+
+- name: group
+  group:
+    name: '{{ zookeeper_group }}'
+
+- name: user
+  user:
+    name: '{{ zookeeper_user }}'
+    group: '{{ zookeeper_group }}'
+    system: yes
+
+- name: binary dir
+  file:
+    path: '{{ zookeeper_dir_work }}'
+    state: directory
+    owner: '{{ zookeeper_user }}'
+    group: '{{ zookeeper_group }}'
+
+- name: download
+  unarchive:
+    src: '{{ zookeeper_url }}'
+    dest: /opt
+    remote_src: yes
+    owner: '{{ zookeeper_user }}'
+    group: '{{ zookeeper_group }}'
+
+- name: data dir
+  file:
+    path: '{{ zookeeper_dir_data }}'
+    state: directory
+    owner: '{{ zookeeper_user }}'
+    group: '{{ zookeeper_group }}'
